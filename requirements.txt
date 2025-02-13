@@ -5,3 +5,4 @@ pandas
 scikit-learn
 joblib
 gunicorn  # Required for deployment
+glob2     # To handle multiple files dynamically
