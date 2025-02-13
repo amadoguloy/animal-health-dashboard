@@ -7,10 +7,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import joblib
+import glob
 
-# Load the dataset
-file_path = "/mnt/data/animalhealth02-13-2025.csv"
-df = pd.read_csv(file_path)
+# Load multiple dataset chunks
+file_paths = glob.glob("/mnt/data/animal_health_chunk_*.csv")
+df = pd.concat([pd.read_csv(fp) for fp in file_paths])
 
 # Preprocessing: Convert categorical variables into numerical labels
 label_encoders = {}
