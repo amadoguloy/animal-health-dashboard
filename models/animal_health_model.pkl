@@ -1,0 +1,36 @@
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+
+# Re-load the dataset
+df = pd.read_csv("/mnt/data/animalhealth02-13-2025.csv")
+
+# Convert categorical variables into numerical labels
+label_encoders = {}
+categorical_columns = ['World region', 'Country', 'Administrative Division', 'Disease', 'Animal Category']
+for col in categorical_columns:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col].astype(str))
+    label_encoders[col] = le
+
+# Create target variable (binary classification: whether an outbreak happened)
+df['Outbreak_Flag'] = df['New outbreaks'].apply(lambda x: 1 if str(x).isdigit() and int(x) > 0 else 0)
+
+# Define features and target
+features = ['Year', 'World region', 'Country', 'Disease', 'Animal Category']
+X = df[features]
+y = df['Outbreak_Flag']
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Save the trained model
+model_path = "/mnt/data/animal_health_model.pkl"
+joblib.dump(model, model_path)
+
+# Provide the download link
+model_path
