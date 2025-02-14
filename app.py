@@ -8,9 +8,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import glob
+import os
 
 # Load multiple dataset chunks
-file_paths = glob.glob("/mnt/data/animal_health_chunk_*.csv")
+file_paths = glob.glob("/data/animal_health_chunk_*.csv")
+
+if not file_paths:
+    raise FileNotFoundError("No dataset chunks found in /data/. Please check file paths.")
+
 df = pd.concat([pd.read_csv(fp) for fp in file_paths])
 
 # Preprocessing: Convert categorical variables into numerical labels
@@ -33,7 +38,7 @@ model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Save the model
-model_path = "/mnt/data/animal_health_model.pkl"
+model_path = "/data/animal_health_model.pkl"
 joblib.dump(model, model_path)
 
 # Create the Dash app
